@@ -2,14 +2,16 @@
 
 public class PlayerCharacter : MonoBehaviour
 {
-    private Animator anim;
-
-    public void SetUp(Animator anim)
+    public struct CharacterProperties
     {
-        this.anim = anim;
+        public bool isMoving;
+        public Vector3 moveDirection;
+        public bool isAttacking;
     }
 
-    
+    CharacterProperties properties;
+    public CharacterProperties getCharacterProperties() { return properties; }
+
     private float movementScaler = 5.0f;
     private Vector3 hitboxOffset = new Vector3(0, -0.3f, 0);
 
@@ -28,7 +30,8 @@ public class PlayerCharacter : MonoBehaviour
 
     void Start()
     {
-        anim.Play("Knight_Idle");
+        //anim.Play("Knight_Idle");
+
         //healthBar.setHealth(100);
         //healthBar.transform.localPosition = new Vector3(-0.5f, -1.5f, 0);
         //Debug.Log(healthBar.transform.localPosition);
@@ -37,25 +40,12 @@ public class PlayerCharacter : MonoBehaviour
 
     void Update()
     {
-        Vector3 movementVector = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0.0f).normalized;
-
-        Vector3 targetPosition = transform.position + movementVector * Time.deltaTime * movementScaler;
-        RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, movementVector, Time.deltaTime * movementScaler);
-        if (raycastHit.collider == null)
-        {
-            transform.position = targetPosition;
-        }
-        else
-        {
-            Debug.Log(raycastHit.collider);
-        }
-
-        updateAnimatorFacing(movementVector);
+        HandleMovement();
+        HandleAttack();
 
         //healthInPercentage -= 0.1f;
         //updateHealthBar(healthBar, healthInPercentage);
     }
-
 
 
     //private void updateHealthBar(HealthbarControl hbCtl, float healthInPercentage)
@@ -63,9 +53,38 @@ public class PlayerCharacter : MonoBehaviour
     //    hbCtl.setHealth(healthInPercentage);
     //}
 
+
+
+    private void HandleMovement()
+    {
+        Vector3 movementDirection = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0.0f).normalized;
+        properties.moveDirection = movementDirection;
+
+        if (movementDirection == new Vector3(0,0,0))
+        {
+            properties.isMoving = false;
+        }
+        else
+        {
+            Vector3 targetPosition = transform.position + movementDirection * Time.deltaTime * movementScaler;
+            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, movementDirection, Time.deltaTime * movementScaler);
+            if (raycastHit.collider == null)
+            {
+                transform.position = targetPosition;
+                updateAnimationFacing(movementDirection);
+                properties.isMoving = true;
+            }
+            else
+            {
+                Debug.Log(raycastHit.collider);
+                properties.isMoving = false;
+            }
+        } 
+    }
+
     private bool facingRight = true;         // by deafult facing right
 
-    public void updateAnimatorFacing(Vector3 moveDir)
+    private void updateAnimationFacing(Vector3 moveDir)
     {
         /* Adjust animation */
         if (moveDir.x != 0.0f ||
@@ -81,12 +100,19 @@ public class PlayerCharacter : MonoBehaviour
                 theScale.x *= -1;
                 transform.localScale = theScale;
             }
+        }
+    }
 
-            anim.Play("Knight_Movement");
+
+    private void HandleAttack()
+    {
+        if(Input.GetKeyDown("space"))
+        {
+            properties.isAttacking = true;
         }
         else
         {
-            anim.Play("Knight_Idle");
+            properties.isAttacking = false;
         }
     }
 }
