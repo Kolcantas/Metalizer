@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Characters;
+using UnityEngine;
 
-public class PlayerCharacter : MonoBehaviour
+public class PlayerCharacter : Character
 {
     public struct CharacterProperties
     {
@@ -23,7 +24,6 @@ public class PlayerCharacter : MonoBehaviour
     {
         //healthBar = GameObject.Find("Healthbar").GetComponent<HealthbarControl>();
         //figure = FindObjectOfType<Figure>();
-
 
         Debug.Log("PlayerCharacter Awake");
     }
@@ -106,7 +106,7 @@ public class PlayerCharacter : MonoBehaviour
 
     private void HandleAttack()
     {
-        if(Input.GetKeyDown("space"))
+        if(Input.GetKey("space"))
         {
             properties.isAttacking = true;
         }
