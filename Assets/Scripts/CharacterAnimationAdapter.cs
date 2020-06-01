@@ -1,30 +1,32 @@
-﻿using UnityEngine;
+﻿using Characters;
+using UnityEngine;
 
+/** @brief Link between Character and AnimationStateMachine */
 public class CharacterAnimationAdapter : MonoBehaviour
 {
-    private Animator anim;
-    private PlayerCharacter playerChar;
-    public void SetUp(Animator anim, PlayerCharacter playerChar)
+    private Character _character;
+    private Animator _animator;
+
+    public void SetUp(Character character, Animator anim)
     {
-        this.anim = anim;
-        this.playerChar = playerChar;
+        _character = character;
+        _animator = anim;
     }
 
     void Update()
     {
-        if(anim == null || playerChar == null)
+        HandleAnimation(_character.getCharacterProperties());
+    }
+
+    public void HandleAnimation(PlayerCharacter.CharacterProperties prop)
+    {
+        if (_character == null || _animator == null)
         {
             Debug.Log("Uninitialized! Call SetUp() before any frame update!");
             return;
         }
 
-        HandleAnimation(playerChar.getCharacterProperties());
-    }
-
-
-    private void HandleAnimation(PlayerCharacter.CharacterProperties prop)
-    {
-        anim.SetBool("isMoving", prop.isMoving);
-        anim.SetBool("triggerAttack", prop.isAttacking);
+        _animator.SetBool("isMoving", prop.isMoving);
+        _animator.SetBool("triggerAttack", prop.isAttacking);
     }
 }

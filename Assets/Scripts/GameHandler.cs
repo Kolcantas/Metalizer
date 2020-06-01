@@ -1,37 +1,41 @@
-﻿using UnityEditor.Animations;
-using UnityEngine;
+﻿using UnityEngine;
+using Factory;
+using CombatSystemNS;
+using System.Collections.Generic;
+using Characters;
 
 public class GameHandler : MonoBehaviour
 {
-    private GameObject playerObject;
-    private GameObject playerCharacterAnimationAdapeterObject;
-    private Animator playerAnimator;
+    PlayerCharacterFactory playFact;
+    EnemyCharacterFactory goblinFactory;
+
+    List<GameObject> playerCharacters = new List<GameObject>();
+    List<GameObject> enemyCharacters = new List<GameObject>();
+
+    CombatSystem combatSystem;
 
     void Awake()
     {
-        /* Player Character */
-        playerObject = new GameObject("PlayerCharacter", typeof(SpriteRenderer));
-        playerObject.GetComponent<SpriteRenderer>().sprite = AssetCollection.instance.Knight_Idle_Default;
-        playerObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
-        playerObject.transform.position = new Vector3(0, 0, 0);
+        combatSystem = new CombatSystem(ref playerCharacters, ref enemyCharacters);
 
-        playerObject.AddComponent<PlayerCharacter>();
+        playFact = new PlayerCharacterFactory("WorstPlayerEver", AssetCollection.instance.animatorKnight);
+        playerCharacters.Add( playFact.CreateCharacter() );
 
-        playerAnimator = playerObject.AddComponent<Animator>();
-        playerAnimator.runtimeAnimatorController = AssetCollection.instance.animatorKnight;
-
-        playerCharacterAnimationAdapeterObject = new GameObject("PlayerCharacterAnimationAdapter", typeof(CharacterAnimationAdapter));
-        playerCharacterAnimationAdapeterObject.GetComponent<CharacterAnimationAdapter>().SetUp(playerAnimator, playerObject.GetComponent<PlayerCharacter>());
-        
+        goblinFactory = new EnemyCharacterFactory("Goblin", AssetCollection.instance.animatorGoblin, 3f);
     }
     
 
     private void Start()
     {
-        
+        for(int i=0; i < 5; i++)
+        {
+            enemyCharacters.Add( goblinFactory.CreateCharacter(new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), 0)) );
+        }
+
+        Debug.Log(combatSystem.GetEnemyCharacterCount());
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         
