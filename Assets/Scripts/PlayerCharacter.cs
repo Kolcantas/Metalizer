@@ -3,21 +3,10 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
-    public struct CharacterProperties
-    {
-        public bool isMoving;
-        public Vector3 moveDirection;
-        public bool isAttacking;
-    }
-
-    CharacterProperties properties;
-    public CharacterProperties getCharacterProperties() { return properties; }
-
     private float movementScaler = 5.0f;
     private Vector3 hitboxOffset = new Vector3(0, -0.3f, 0);
 
     //[SerializeField] private HealthbarControl healthBar;
-    //[SerializeField] private Figure figure;
     //private float healthInPercentage = 100;
 
     private void Awake()
@@ -30,8 +19,6 @@ public class PlayerCharacter : Character
 
     void Start()
     {
-        //anim.Play("Knight_Idle");
-
         //healthBar.setHealth(100);
         //healthBar.transform.localPosition = new Vector3(-0.5f, -1.5f, 0);
         //Debug.Log(healthBar.transform.localPosition);
@@ -80,27 +67,6 @@ public class PlayerCharacter : Character
                 properties.isMoving = false;
             }
         } 
-    }
-
-    private bool facingRight = true;         // by deafult facing right
-
-    private void updateAnimationFacing(Vector3 moveDir)
-    {
-        /* Adjust animation */
-        if (moveDir.x != 0.0f ||
-            moveDir.y != 0.0f)
-        {
-            bool movingRight = moveDir.x > 0.0f ? true : false;
-
-            if (facingRight ^ movingRight)
-            {
-                facingRight = !facingRight;
-
-                Vector3 theScale = transform.localScale;
-                theScale.x *= -1;
-                transform.localScale = theScale;
-            }
-        }
     }
 
 
