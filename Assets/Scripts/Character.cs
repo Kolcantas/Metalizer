@@ -30,7 +30,6 @@ namespace Characters
         }
 
         public float movementScaler = 5.0f;
-        public Vector3 hitboxOffset = new Vector3(0,0,0);
 
 
         /* Animation Adapter */
@@ -64,19 +63,29 @@ namespace Characters
             }
             else
             {
-                Vector3 targetPosition = transform.position + relativeMovement;
-                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, properties.moveDirection, relativeMovement.magnitude);
-                if (raycastHit.collider == null)
-                {
-                    transform.position = targetPosition;
-                    updateAnimationFacing(properties.moveDirection);
-                    properties.isMoving = true;
-                }
-                else
-                {
-                    Debug.Log(raycastHit.collider);
-                    properties.isMoving = false;
-                }
+                properties.isMoving = true;
+                transform.position += relativeMovement;
+                updateAnimationFacing(properties.moveDirection);
+
+                //Vector3 offsetToColliderBounds = properties.moveDirection * GetComponent<BoxCollider2D>().size.magnitude;
+
+                //RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + offsetToColliderBounds,
+                //                                            properties.moveDirection,
+                //                                            relativeMovement.magnitude - offsetToColliderBounds.magnitude);      // decrease distance with the offsetted origin
+
+                ////RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, properties.moveDirection, relativeMovement.magnitude);
+                //if (raycastHit.collider == null)
+                //{
+                //    transform.position = targetPosition;
+                //    updateAnimationFacing(properties.moveDirection);
+                //    properties.isMoving = true;
+                //}
+                //else
+                //{
+                //    Debug.Log(offsetToColliderBounds);
+                //    Debug.DrawLine(transform.position + offsetToColliderBounds, targetPosition);
+                //    properties.isMoving = false;
+                //}
             }
         }
 
@@ -99,6 +108,21 @@ namespace Characters
                     transform.localScale = theScale;
                 }
             }
+        }
+
+
+        void OnDrawGizmosSelected()
+        {
+            Vector3 offset = GetComponent<BoxCollider2D>().offset;
+            Vector3 size = GetComponent<BoxCollider2D>().size;
+
+            size.x *= transform.localScale.x;
+            size.y *= transform.localScale.y;
+            offset.x *= transform.localScale.x;
+            offset.y *= transform.localScale.y;
+
+            Gizmos.color = new Color(1, 0, 0, 0.5F);
+            Gizmos.DrawWireCube(transform.position + offset, size);
         }
     }
 }

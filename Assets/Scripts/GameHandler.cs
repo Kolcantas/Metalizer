@@ -4,40 +4,45 @@ using CombatSystemNS;
 using System.Collections.Generic;
 using Characters;
 
-public class GameHandler : MonoBehaviour
+namespace GameCore
 {
-    PlayerCharacterFactory playFact;
-    EnemyCharacterFactory goblinFactory;
-
-    List<GameObject> playerCharacters = new List<GameObject>();
-    List<GameObject> enemyCharacters = new List<GameObject>();
-
-    CombatSystem combatSystem;
-
-    void Awake()
+    public class GameHandler : MonoBehaviour
     {
-        combatSystem = new CombatSystem(ref playerCharacters, ref enemyCharacters);
+        PlayerCharacterFactory playFact;
+        EnemyCharacterFactory goblinFactory;
 
-        playFact = new PlayerCharacterFactory("WorstPlayerEver", AssetCollection.instance.animatorKnight);
-        playerCharacters.Add( playFact.CreateCharacter() );
+        List<GameObject> playerCharacters = new List<GameObject>();
+        List<GameObject> enemyCharacters = new List<GameObject>();
 
-        goblinFactory = new EnemyCharacterFactory("Goblin", AssetCollection.instance.animatorGoblin, 3f);
-    }
-    
+        CombatSystem combatSystem;
 
-    private void Start()
-    {
-        for(int i=0; i < 5; i++)
+        void Awake()
         {
-            enemyCharacters.Add( goblinFactory.CreateCharacter(new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), 0)) );
+            combatSystem = new CombatSystem(ref playerCharacters, ref enemyCharacters);
+
+            playFact = new PlayerCharacterFactory("WorstPlayerEver", AssetCollection.instance.animatorKnight,
+                                                                     AssetCollection.instance.hitBox_Kinght);
+            playerCharacters.Add(playFact.CreateCharacter());
+
+            goblinFactory = new EnemyCharacterFactory("Goblin", AssetCollection.instance.animatorGoblin,
+                                                                AssetCollection.instance.hitBox_Goblin, 3f);
         }
 
-        Debug.Log(combatSystem.GetEnemyCharacterCount());
-    }
+
+        private void Start()
+        {
+            for (int i = 0; i < 1; i++)
+            {
+                enemyCharacters.Add(goblinFactory.CreateCharacter(new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), 0)));
+            }
+
+            Debug.Log(combatSystem.GetEnemyCharacterCount());
+        }
 
 
-    void Update()
-    {
-        
+        void Update()
+        {
+
+        }
     }
 }

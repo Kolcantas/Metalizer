@@ -24,8 +24,12 @@ namespace Characters
             state = State.Chasing;
         }
 
+        private void Update()
+        {
+            
+        }
 
-        void Update()
+        void FixedUpdate()
         {
             switch (state)
             {
@@ -42,6 +46,7 @@ namespace Characters
                     break;
             }
         }
+
 
         /** @returns NextState */
         private State HandleStrollingState()
@@ -76,12 +81,9 @@ namespace Characters
         {
             targetPlayer = CombatSystem.instance.GetNearestPlayerCharacterFrom(this.gameObject);
 
-            if(CombatSystem.AreInRange(this.transform, targetPlayer.transform, 0.5f))
-            {
-                properties.isAttacking = true;
-            }
+            properties.isAttacking = CombatSystem.AreInRange(this.transform, targetPlayer.transform, 0.5f);
 
-            TryToMove((targetPlayer.transform.position - this.transform.position).normalized * .005f);
+            TryToMove((targetPlayer.transform.position - this.transform.position).normalized * .05f);
 
             return State.Chasing;
         }

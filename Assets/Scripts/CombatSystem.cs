@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CombatSystemNS
 {
@@ -23,6 +22,7 @@ namespace CombatSystemNS
         public int GetEnemyCharacterCount() { return _enemyCharacters.Count; }
 
 
+        /***** Distance *****/
         static public float DistanceOf(Transform tf1, Transform tf2)    { return (tf1.position - tf2.position).magnitude; }
         static public float DistanceOf(GameObject go1, GameObject go2)  { return DistanceOf(go1.transform, go2.transform); }
         static public bool AreInRange(Transform char1, Transform char2, float range) { return (char1.position - char2.position).magnitude < range; }
@@ -54,15 +54,22 @@ namespace CombatSystemNS
             return GetNearestTargetFrom(src, ref _playerCharacters);
         }
 
-        private float closeCombatRange = 1f;
-        public GameObject IsAnyEnemyInCloseCombatRangeFrom(GameObject src)
+        public GameObject IsAnyEnemyInRangeFrom(GameObject src, float range)
         {
             GameObject nearestEnemy = GetNearestTargetFrom(src, ref _enemyCharacters);
-            if (AreInRange(nearestEnemy, src, closeCombatRange))
+            if (AreInRange(nearestEnemy, src, range))
                 return nearestEnemy;
             else
                 return null;
         }
 
+        public GameObject IsAnyPlayerInRangeFrom(GameObject src, float range)
+        {
+            GameObject nearestEnemy = GetNearestTargetFrom(src, ref _playerCharacters);
+            if (AreInRange(nearestEnemy, src, range))
+                return nearestEnemy;
+            else
+                return null;
+        }
     }
 }

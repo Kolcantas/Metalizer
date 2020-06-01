@@ -25,12 +25,16 @@ namespace Characters
 
 
         void Update()
-        {
-            HandleMovement();
+        { 
             HandleAttack();
 
             //healthInPercentage -= 0.1f;
             //updateHealthBar(healthBar, healthInPercentage);
+        }
+
+        private void FixedUpdate()
+        {
+            HandleMovement();
         }
 
 
