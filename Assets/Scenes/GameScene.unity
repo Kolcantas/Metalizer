@@ -167,6 +167,7 @@ MonoBehaviour:
   Knight_Idle_Default: {fileID: 21300000, guid: 84ce2f114ad12bd4ebafc77060220324,
     type: 3}
   animatorKnight: {fileID: 9100000, guid: d4fab0e946dee7b489afbc4457efdc46, type: 2}
+  animatorGoblin: {fileID: 9100000, guid: 3bfd387d70dc6fb479f4d11fb3fc46df, type: 2}
 --- !u!1 &104635253
 GameObject:
   m_ObjectHideFlags: 0

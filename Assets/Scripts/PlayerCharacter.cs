@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
-    private float movementScaler = 5.0f;
-    private Vector3 hitboxOffset = new Vector3(0, -0.3f, 0);
-
     //[SerializeField] private HealthbarControl healthBar;
     //private float healthInPercentage = 100;
 
@@ -13,7 +10,7 @@ public class PlayerCharacter : Character
     {
         //healthBar = GameObject.Find("Healthbar").GetComponent<HealthbarControl>();
         //figure = FindObjectOfType<Figure>();
-
+        setDefaultCharacterProperties();
         Debug.Log("PlayerCharacter Awake");
     }
 
@@ -45,28 +42,8 @@ public class PlayerCharacter : Character
     private void HandleMovement()
     {
         Vector3 movementDirection = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0.0f).normalized;
-        properties.moveDirection = movementDirection;
-
-        if (movementDirection == new Vector3(0,0,0))
-        {
-            properties.isMoving = false;
-        }
-        else
-        {
-            Vector3 targetPosition = transform.position + movementDirection * Time.deltaTime * movementScaler;
-            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, movementDirection, Time.deltaTime * movementScaler);
-            if (raycastHit.collider == null)
-            {
-                transform.position = targetPosition;
-                updateAnimationFacing(movementDirection);
-                properties.isMoving = true;
-            }
-            else
-            {
-                Debug.Log(raycastHit.collider);
-                properties.isMoving = false;
-            }
-        } 
+        
+        TryToMove(movementDirection);
     }
 
 

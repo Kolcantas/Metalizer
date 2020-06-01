@@ -1,5 +1,4 @@
-﻿using Characters;
-using Factory;
+﻿using Factory;
 using UnityEngine;
 using UnityEditor.Animations;
 
@@ -18,10 +17,10 @@ public class PlayerCharacterFactory : CharacterFactory
     private GameObject playerObject;
     private Animator playerAnimator;
 
-    public override GameObject CreateCharacter()
+    public override GameObject CreateCharacter(Vector3 initPos)
     {
         playerObject = new GameObject(_name, typeof(SpriteRenderer));
-        playerObject.transform.position = new Vector3(0, 0, 0);
+        playerObject.transform.position = initPos;
 
         playerObject.AddComponent<PlayerCharacter>();
 
@@ -29,6 +28,8 @@ public class PlayerCharacterFactory : CharacterFactory
         playerAnimator.runtimeAnimatorController = _animator;
 
         playerObject.GetComponent<PlayerCharacter>().AssignAnimationAdapter(playerAnimator);
+        playerObject.GetComponent<PlayerCharacter>().movementScaler = 5f;
+        playerObject.GetComponent<PlayerCharacter>().hitboxOffset = new Vector3(0, -0.3f, 0);
 
         return playerObject;
     }

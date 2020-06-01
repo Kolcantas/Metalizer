@@ -20,4 +20,7 @@ public class AssetCollection : MonoBehaviour
 
     public AnimatorController animatorKnight;
 
+    public AnimatorController animatorGoblin;
+    public float goblinScale;
+
 }
