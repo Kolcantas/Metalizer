@@ -54,22 +54,22 @@ namespace Characters
 
 
         /* Movement */
-        protected void TryToMove(Vector3 direction)
+        protected void TryToMove(Vector3 relativeMovement)
         {
-            properties.moveDirection = direction;
+            properties.moveDirection = relativeMovement.normalized;
 
-            if (direction == new Vector3(0, 0, 0))
+            if (relativeMovement == new Vector3(0, 0, 0))
             {
                 properties.isMoving = false;
             }
             else
             {
-                Vector3 targetPosition = transform.position + direction * Time.deltaTime * movementScaler;
-                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, direction, Time.deltaTime * movementScaler);
+                Vector3 targetPosition = transform.position + relativeMovement;
+                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, properties.moveDirection, relativeMovement.magnitude);
                 if (raycastHit.collider == null)
                 {
                     transform.position = targetPosition;
-                    updateAnimationFacing(direction);
+                    updateAnimationFacing(properties.moveDirection);
                     properties.isMoving = true;
                 }
                 else

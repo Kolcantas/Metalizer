@@ -1,5 +1,4 @@
-﻿using Characters;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Factory
 {
