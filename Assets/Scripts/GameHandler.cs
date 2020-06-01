@@ -1,18 +1,23 @@
 ﻿using UnityEngine;
 using Factory;
-using Characters;
+using CombatSystemNS;
 using System.Collections.Generic;
+using Characters;
 
 public class GameHandler : MonoBehaviour
 {
     PlayerCharacterFactory playFact;
     EnemyCharacterFactory goblinFactory;
 
-    List<GameObject> playerCharacters;
-    List<GameObject> enemyCharacters;
+    List<GameObject> playerCharacters = new List<GameObject>();
+    List<GameObject> enemyCharacters = new List<GameObject>();
+
+    CombatSystem combatSystem;
 
     void Awake()
     {
+        combatSystem = new CombatSystem(ref playerCharacters, ref enemyCharacters);
+
         playFact = new PlayerCharacterFactory("WorstPlayerEver", AssetCollection.instance.animatorKnight);
         playerCharacters.Add( playFact.CreateCharacter() );
 
@@ -26,6 +31,8 @@ public class GameHandler : MonoBehaviour
         {
             enemyCharacters.Add( goblinFactory.CreateCharacter(new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), 0)) );
         }
+
+        Debug.Log(combatSystem.GetEnemyCharacterCount());
     }
 
 

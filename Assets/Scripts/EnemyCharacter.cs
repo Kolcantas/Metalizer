@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using CombatSystemNS;
 
 namespace Characters
 {
@@ -16,12 +17,11 @@ namespace Characters
         private void Awake()
         {
             setDefaultCharacterProperties();
-            Debug.Log("Enemy Character Awake");
         }
 
         void Start()
         {
-            state = State.Strolling;
+            state = State.Chasing;
         }
 
 
@@ -36,7 +36,7 @@ namespace Characters
                     state = HandleStrollingState();
                     break;
                 case State.Chasing:
-
+                    state = HandleChasingState();
                     break;
                 default:
                     break;
@@ -47,7 +47,6 @@ namespace Characters
         private State HandleStrollingState()
         {
             TryToMove(GenerateNextStrollingMovement());
-
             return State.Strolling;
         }
 
@@ -71,6 +70,22 @@ namespace Characters
 
             return relativeMovement;
         }
+
+        GameObject targetPlayer;
+        private State HandleChasingState()
+        {
+            targetPlayer = CombatSystem.instance.GetNearestPlayerCharacterFrom(this.gameObject);
+
+            if(CombatSystem.AreInRange(this.transform, targetPlayer.transform, 0.5f))
+            {
+                properties.isAttacking = true;
+            }
+
+            TryToMove((targetPlayer.transform.position - this.transform.position).normalized * .005f);
+
+            return State.Chasing;
+        }
+
     }
 
 }
