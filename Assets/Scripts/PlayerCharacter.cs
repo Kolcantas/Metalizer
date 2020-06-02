@@ -8,11 +8,17 @@ namespace Characters
         //[SerializeField] private HealthbarControl healthBar;
         //private float healthInPercentage = 100;
 
+        TimedAttack timedAttack;
+
         private void Awake()
         {
             //healthBar = GameObject.Find("Healthbar").GetComponent<HealthbarControl>();
             //figure = FindObjectOfType<Figure>();
-            setDefaultCharacterProperties();
+
+            timedAttack = gameObject.AddComponent<TimedAttack>();
+            timedAttack.SetUp(1f);
+
+            setDefaultStatus();
             Debug.Log("PlayerCharacter Awake");
         }
 
@@ -27,7 +33,6 @@ namespace Characters
         void Update()
         { 
             HandleAttack();
-
             //healthInPercentage -= 0.1f;
             //updateHealthBar(healthBar, healthInPercentage);
         }
@@ -57,12 +62,21 @@ namespace Characters
         {
             if (Input.GetKey("space"))
             {
-                properties.isAttacking = true;
+                if(true == timedAttack.TryToAttack())
+                {
+                    Collider2D[] charactersHit = Physics2D.OverlapCircleAll(transform.position, 3f);
+                    foreach (Collider2D characterHit in charactersHit)
+                    {
+                        if (characterHit == this.GetComponent<Collider2D>())
+                            continue;
+
+                        Debug.Log(characterHit);
+                        characterHit.GetComponentInParent<Character>().takeDamage(30f);
+                    }
+                }
             }
-            else
-            {
-                properties.isAttacking = false;
-            }
+
+            status.isAttacking = timedAttack.isAttacking();
         }
     }
 

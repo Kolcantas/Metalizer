@@ -13,10 +13,13 @@ namespace Characters
         }
 
         private State state;
+        TimedAttack timedAttack;
 
         private void Awake()
         {
-            setDefaultCharacterProperties();
+            setDefaultStatus();
+            timedAttack = gameObject.AddComponent<TimedAttack>();
+            timedAttack.SetUp(5f);
         }
 
         void Start()
@@ -34,7 +37,7 @@ namespace Characters
             switch (state)
             {
                 case State.Standing:
-                    properties.isMoving = false;
+                    status.isMoving = false;
                     break;
                 case State.Strolling:
                     state = HandleStrollingState();
@@ -81,11 +84,31 @@ namespace Characters
         {
             targetPlayer = CombatSystem.instance.GetNearestPlayerCharacterFrom(this.gameObject);
 
-            properties.isAttacking = CombatSystem.AreInRange(this.transform, targetPlayer.transform, 0.5f);
+            if(true == CombatSystem.AreInRange(this.transform, targetPlayer.transform, 1.5f) )
+            {
+                HandleAttack();
+            }
 
             TryToMove((targetPlayer.transform.position - this.transform.position).normalized * .05f);
 
             return State.Chasing;
+        }
+
+        private void HandleAttack()
+        {
+            if (true == timedAttack.TryToAttack())
+            {
+                Collider2D[] charactersHit = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+                foreach (Collider2D characterHit in charactersHit)
+                {
+                    if (characterHit == this.GetComponent<Collider2D>())
+                        continue;
+
+                    characterHit.GetComponentInParent<Character>().takeDamage(30f);
+                }
+            }
+
+            status.isAttacking = timedAttack.isAttacking();
         }
 
     }

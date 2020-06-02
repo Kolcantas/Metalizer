@@ -15,10 +15,10 @@ public class CharacterAnimationAdapter : MonoBehaviour
 
     void Update()
     {
-        HandleAnimation(_character.getCharacterProperties());
+        HandleAnimation(_character.getStatus());
     }
 
-    public void HandleAnimation(PlayerCharacter.CharacterProperties prop)
+    public void HandleAnimation(PlayerCharacter.Status status)
     {
         if (_character == null || _animator == null)
         {
@@ -26,7 +26,8 @@ public class CharacterAnimationAdapter : MonoBehaviour
             return;
         }
 
-        _animator.SetBool("isMoving", prop.isMoving);
-        _animator.SetBool("triggerAttack", prop.isAttacking);
+        _animator.SetBool("isMoving", status.isMoving);
+        _animator.SetBool("triggerAttack", status.isAttacking);
+        _animator.SetBool("isAlive", status.isAlive);
     }
 }

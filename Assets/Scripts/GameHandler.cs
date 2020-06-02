@@ -31,7 +31,7 @@ namespace GameCore
 
         private void Start()
         {
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 3; i++)
             {
                 enemyCharacters.Add(goblinFactory.CreateCharacter(new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), 0)));
             }

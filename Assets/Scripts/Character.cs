@@ -5,7 +5,7 @@ namespace Characters
     public abstract class Character : MonoBehaviour
     {
         /* Standard state variables (used by Animation) */
-        public struct CharacterProperties
+        public struct Status
         {
             public bool isMoving;
             public Vector3 moveDirection;
@@ -14,22 +14,44 @@ namespace Characters
             public bool isAlive;
             public bool takingHit;
 
+            public float health;
+            public float maxHealth;
             public float healthInPercentage;
         }
 
-        public CharacterProperties properties;
-        public CharacterProperties getCharacterProperties() { return properties; }
-        public void setDefaultCharacterProperties()
+        public Status status;
+        public Status getStatus() { return status; }
+        public void setDefaultStatus()
         {
-            properties.isMoving = false;
-            properties.moveDirection = new Vector3(0, 0, 0);
-            properties.isAttacking = false;
-            properties.isAlive = true;
-            properties.takingHit = false;
-            properties.healthInPercentage = 100f;
+            status.isMoving = false;
+            status.moveDirection = new Vector3(0, 0, 0);
+            status.isAttacking = false;
+            status.isAlive = true;
+            status.takingHit = false;
+            status.maxHealth = 100f;
+            status.health = status.maxHealth;
+            status.healthInPercentage = 100f;
         }
 
         public float movementScaler = 5.0f;
+
+        /** @returns killed after damage? */
+        public bool takeDamage(float dmg)
+        {
+            status.health -= dmg;
+
+            Debug.Log("Damage taken!" + status.health);
+
+            if (status.health < 0f)
+            {
+                status.health = 0f;
+                status.isAlive = false;
+            }
+
+            status.healthInPercentage = status.health / status.maxHealth * 100f;
+
+            return !status.isAlive;
+        }
 
 
         /* Animation Adapter */
@@ -55,37 +77,17 @@ namespace Characters
         /* Movement */
         protected void TryToMove(Vector3 relativeMovement)
         {
-            properties.moveDirection = relativeMovement.normalized;
+            status.moveDirection = relativeMovement.normalized;
 
             if (relativeMovement == new Vector3(0, 0, 0))
             {
-                properties.isMoving = false;
+                status.isMoving = false;
             }
             else
             {
-                properties.isMoving = true;
+                status.isMoving = true;
                 transform.position += relativeMovement;
-                updateAnimationFacing(properties.moveDirection);
-
-                //Vector3 offsetToColliderBounds = properties.moveDirection * GetComponent<BoxCollider2D>().size.magnitude;
-
-                //RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + offsetToColliderBounds,
-                //                                            properties.moveDirection,
-                //                                            relativeMovement.magnitude - offsetToColliderBounds.magnitude);      // decrease distance with the offsetted origin
-
-                ////RaycastHit2D raycastHit = Physics2D.Raycast(transform.position + hitboxOffset, properties.moveDirection, relativeMovement.magnitude);
-                //if (raycastHit.collider == null)
-                //{
-                //    transform.position = targetPosition;
-                //    updateAnimationFacing(properties.moveDirection);
-                //    properties.isMoving = true;
-                //}
-                //else
-                //{
-                //    Debug.Log(offsetToColliderBounds);
-                //    Debug.DrawLine(transform.position + offsetToColliderBounds, targetPosition);
-                //    properties.isMoving = false;
-                //}
+                updateAnimationFacing(status.moveDirection);
             }
         }
 
@@ -123,6 +125,9 @@ namespace Characters
 
             Gizmos.color = new Color(1, 0, 0, 0.5F);
             Gizmos.DrawWireCube(transform.position + offset, size);
+
+            Gizmos.color = new Color(0, 1, 1, 0.5f);
+            Gizmos.DrawSphere(transform.position, 3f);
         }
     }
 }
